@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>D3 Project</title>
-  <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+  <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
   <script type="text/javascript">
@@ -32,7 +32,29 @@
       Days_PM10: parseInt(d["Days_PM10"])
     };
   }
-  d3.csv("/data/annual_aqi_by_county_merged.csv", rowConverter, function(data) {
+  d3.csv("/data/annual_aqi_by_county_merged.csv", function(d) {
+    return {
+      State: d.State,
+      County: d.County,
+      Year: new Date(+d.Year, 0, 1),
+      Days_with_AQI: +d["Days with AQI"],
+      Good_Days: parseInt(d["Good Days"]),
+      Moderate_Days: parseInt(d["Moderate Days"]),
+      Unhealthy_for_Sensitive_Groups_Days: parseInt(d["Unhealthy for Sensitive Groups Days"]),
+      Unhealthy_Days: parseInt(d["Unhealthy Days"]),
+      Very_Unhealthy_Days: parseInt(d["Very Unhealthy Days"]),
+      Hazardous_Days: parseInt(d["Hazardous Days"]),
+      Max_AQI: parseInt(d["Max AQI"]),
+      Percentile_AQI_90th:parseInt(d["90th Percentile AQI"]),
+      Median_AQI: parseInt(d["Median AQI"]),
+      Days_CO: parseInt(d["Days CO"]),
+      Days_NO2: parseInt(d["Days NO2"]),
+      Days_Ozone: parseInt(d["Days Ozone"]),
+      Days_SO2: parseInt(d["Days_SO2"]),
+      Days_PM25: parseInt(d["Days PM2.5"]),
+      Days_PM10: parseInt(d["Days_PM10"])
+    };
+  }, function(data) {
     console.log(data);
     dataset = data;
   })

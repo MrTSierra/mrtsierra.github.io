@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>D3 Project</title>
+  <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<body>
+  <script type="text/javascript">
+  var dataset;
+  console.log("test1");
+  d3.csv("data.csv", function(d) {
+    console.log("test2");
+  return {
+    year: new Date(+d.Year, 0, 1), // convert "Year" column to Date
+    make: d.Make,
+    model: d.Model,
+    length: +d.Length // convert "Length" column to number
+  };
+}, function(e, d) {
+  console.log("test3");
+  console.log(d);
+});
+  //d3.select("body").append("p").text("New paragraph!");
+  </script>
+</body>
+</html>
