@@ -4,38 +4,117 @@
   <meta charset="utf-8">
   <title>D3 Project</title>
   <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+  <style type="text/css">
+
+    .line {
+      fill: none;
+      stroke: teal;
+      stroke-width: 0.5;
+    }
+
+  </style>
 </head>
 <body>
   <script type="text/javascript">
+  // Global variables
   var dataset;
+  var filteredData = [];
+
+  var w = 800;
+  var h = 300;
+
+  // Functions
   var parseTime = d3.timeParse("%Y");
   var rowConverter = function(d) {
     return {
       State: d.State,
       County: d.County,
       Year: new Date(+d.Year, 0, 1),
-      Days_with_AQI: parseInt(d["Days with AQI"]),
-      Good_Days: parseInt(d["Good Days"]),
-      Moderate_Days: parseInt(d["Moderate Days"]),
-      Unhealthy_for_Sensitive_Groups_Days: parseInt(d["Unhealthy for Sensitive Groups Days"]),
-      Unhealthy_Days: parseInt(d["Unhealthy Days"]),
-      Very_Unhealthy_Days: parseInt(d["Very Unhealthy Days"]),
-      Hazardous_Days: parseInt(d["Hazardous Days"]),
-      Max_AQI: parseInt(d["Max AQI"]),
-      Percentile_AQI_90th:parseInt(d["90th Percentile AQI"]),
-      Median_AQI: parseInt(d["Median AQI"]),
-      Days_CO: parseInt(d["Days CO"]),
-      Days_NO2: parseInt(d["Days NO2"]),
-      Days_Ozone: parseInt(d["Days Ozone"]),
-      Days_SO2: parseInt(d["Days_SO2"]),
-      Days_PM25: parseInt(d["Days PM2.5"]),
-      Days_PM10: parseInt(d["Days_PM10"])
+      Days_with_AQI: +(d["Days with AQI"]),
+      Good_Days: +(d["Good Days"]),
+      Moderate_Days: +(d["Moderate Days"]),
+      Unhealthy_for_Sensitive_Groups_Days: +(d["Unhealthy for Sensitive Groups Days"]),
+      Unhealthy_Days: +(d["Unhealthy Days"]),
+      Very_Unhealthy_Days: +(d["Very Unhealthy Days"]),
+      Hazardous_Days: +(d["Hazardous Days"]),
+      Max_AQI: +(d["Max AQI"]),
+      Percentile_AQI_90th:+(d["90th Percentile AQI"]),
+      Median_AQI: +(d["Median AQI"]),
+      Days_CO: +(d["Days CO"]),
+      Days_NO2: +(d["Days NO2"]),
+      Days_Ozone: +(d["Days Ozone"]),
+      Days_SO2: +(d["Days_SO2"]),
+      Days_PM25: +(d["Days PM2.5"]),
+      Days_PM10: +(d["Days_PM10"])
     };
   }
+
+  var filterFunction = function(data){
+    //Takes an array consisting of CSV data and parses it for use in a d3 line function
+    var i;
+    var tempArray = []; //first element year, second element desired term , third term available data for that year, Fourth term the calculated data
+    var yearCount = 0;
+
+    tempArray[0] = [ data[0]["Year"], data[0]["Good_Days"], data[0]["Days_with_AQI"], 0];
+
+    for( i = 1; i<data.length; i++) {
+      if(data[i]["Year"].getTime() == tempArray[yearCount][0].getTime()) {
+        tempArray[yearCount][1] += data[i]["Good_Days"];
+        tempArray[yearCount][2] += data[i]["Days_with_AQI"];
+      } else {
+        yearCount++;
+        tempArray[yearCount] = [ data[i]["Year"], data[i]["Good_Days"], data[i]["Days_with_AQI"], 0];
+      }
+    }
+
+    //convert to average values
+    for( i = 0; i < tempArray.length; i++) {
+      tempArray[i][3] = tempArray[i][1]/tempArray[i][2];
+    }
+
+    return tempArray;
+  }
+
   d3.csv("/data/annual_aqi_by_county_merged.csv", rowConverter, function(data) {
-    console.log(data);
+    console.table(data);
     dataset = data;
-  })
+    filteredData = filterFunction(data);
+    console.table(filteredData);
+
+    //new testing code
+      xScale = d3.scaleTime()
+      .domain([
+        filteredData[0][0],
+        filteredData[filteredData.length-1][0]
+      ])
+      .range([0, w]);
+
+    yScale = d3.scaleLinear()
+    .domain([0, 1])
+    .range([h, 0]);
+
+    //Define line generator
+    var line = d3.line()
+    .x(function(d) { console.log(d[0]); console.log(xScale(d[0])); return xScale(d[0]); })
+    .y(function(d) { console.log(d[3]); console.log(yScale(d[3])); return yScale(d[3]); });
+
+    //Create SVG element
+    var svg = d3.select("body")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", h);
+
+    //Create line
+    svg.append("path")
+      .datum(filteredData)
+      .attr("class", "line")
+      .attr("d", line);
+
+  });
+
+
+
+
   d3.select("body").append("p").text("New paragraph!");
   </script>
 </body>
