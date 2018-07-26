@@ -6,10 +6,16 @@
   <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
   <style type="text/css">
 
-    .line {
+    .goodDaysLine {
       fill: none;
       stroke: teal;
-      stroke-width: 0.5;
+      stroke-width: 1.0;
+    }
+
+    .moderateDaysLine {
+      fill: none;
+      stroke: red;
+      stroke-width: 1.0;
     }
 
   </style>
@@ -18,7 +24,7 @@
   <script type="text/javascript">
   // Global variables
   var dataset;
-  var filteredData = [];
+  //var filteredData = [];
 
   var w = 800;
   var h = 300;
@@ -49,21 +55,21 @@
     };
   }
 
-  var filterFunction = function(data){
-    //Takes an array consisting of CSV data and parses it for use in a d3 line function
+  var filterFunction = function(data, filterValue){
+    //Takes an array consisting of CSV data and parses it using filterValue a string for use in a d3 line function
     var i;
     var tempArray = []; //first element year, second element desired term , third term available data for that year, Fourth term the calculated data
     var yearCount = 0;
 
-    tempArray[0] = [ data[0]["Year"], data[0]["Good_Days"], data[0]["Days_with_AQI"], 0];
+    tempArray[0] = [ data[0]["Year"], data[0][filterValue], data[0]["Days_with_AQI"], 0];
 
     for( i = 1; i<data.length; i++) {
       if(data[i]["Year"].getTime() == tempArray[yearCount][0].getTime()) {
-        tempArray[yearCount][1] += data[i]["Good_Days"];
+        tempArray[yearCount][1] += data[i][filterValue];
         tempArray[yearCount][2] += data[i]["Days_with_AQI"];
       } else {
         yearCount++;
-        tempArray[yearCount] = [ data[i]["Year"], data[i]["Good_Days"], data[i]["Days_with_AQI"], 0];
+        tempArray[yearCount] = [ data[i]["Year"], data[i][filterValue], data[i]["Days_with_AQI"], 0];
       }
     }
 
@@ -75,30 +81,38 @@
     return tempArray;
   }
 
-  d3.csv("/data/annual_aqi_by_county_merged.csv", rowConverter, function(data) {
-    console.table(data);
-    dataset = data;
-    filteredData = filterFunction(data);
-    console.table(filteredData);
-
-    //new testing code
-      xScale = d3.scaleTime()
-      .domain([
-        filteredData[0][0],
-        filteredData[filteredData.length-1][0]
-      ])
-      .range([0, w]);
+  var lineDrawer = function(filteredData){
+    //lineDrawer an array of data as input and returns a line elment
+    xScale = d3.scaleTime()
+    .domain([
+      filteredData[0][0],
+      filteredData[filteredData.length-1][0]
+    ])
+    .range([0, w]);
 
     yScale = d3.scaleLinear()
     .domain([0, 1])
     .range([h, 0]);
 
     //Define line generator
-    var line = d3.line()
-    .x(function(d) { console.log(d[0]); console.log(xScale(d[0])); return xScale(d[0]); })
-    .y(function(d) { console.log(d[3]); console.log(yScale(d[3])); return yScale(d[3]); });
+    return d3.line()
+    .x(function(d) { return xScale(d[0]); })
+    .y(function(d) { return yScale(d[3]); });
+  }
 
-    //Create SVG element
+  d3.csv("/data/annual_aqi_by_county_merged.csv", rowConverter, function(data) {
+    //console.table(data);
+    dataset = data;
+    var dataGoodDays = filterFunction(data, "Good_Days");
+    console.table(dataGoodDays);
+
+    var dataModerateDays = filterFunction(data, "Moderate_Days");
+    console.table(dataModerateDays);
+
+    var lineGoodDays = lineDrawer(dataGoodDays);
+    var lineModerateDays = lineDrawer(dataModerateDays);
+
+
     var svg = d3.select("body")
           .append("svg")
           .attr("width", w)
@@ -106,9 +120,14 @@
 
     //Create line
     svg.append("path")
-      .datum(filteredData)
-      .attr("class", "line")
-      .attr("d", line);
+      .datum(dataGoodDays)
+      .attr("class", "goodDaysLine")
+      .attr("d", lineGoodDays);
+
+    svg.append("path")
+      .datum(dataModerateDays)
+      .attr("class", "moderateDaysLine")
+      .attr("d", lineModerateDays);
 
   });
 
