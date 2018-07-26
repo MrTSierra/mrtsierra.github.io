@@ -51,7 +51,8 @@
   //var filteredData = [];
 
   var w = 800;
-  var h = 300;
+  var h = 500;
+  var padding = 30;
 
   // Functions
   var parseTime = d3.timeParse("%Y");
@@ -120,11 +121,11 @@
       filteredData[0][0],
       filteredData[filteredData.length-1][0]
     ])
-    .range([0, w]);
+    .range([padding, w-padding]);
 
     yScale = d3.scaleLinear()
     .domain([0, 1])
-    .range([h, 0]);
+    .range([h-padding, padding]);
 
     //Define line generator
     var tempLine =  d3.line()
@@ -135,6 +136,8 @@
       .datum(filteredData)
       .attr("class", lineClass)
       .attr("d", tempLine);
+
+      return [xScale, yScale];
 
 
   }
@@ -153,7 +156,24 @@
     lineDrawer(svg, dataset, "Unhealthy_for_Sensitive_Groups_Days", "unhealthyForSensitiveGroupsDaysLine");
     lineDrawer(svg, dataset, "Unhealthy_Days", "unhealthyDaysLine");
     lineDrawer(svg, dataset, "Very_Unhealthy_Days", "veryUnhealthyDaysLine");
-    lineDrawer(svg, dataset, "Hazardous_Days", "hazardousDaysLine");
+    var scales = lineDrawer(svg, dataset, "Hazardous_Days", "hazardousDaysLine");
+
+    var xAxis = d3.axisBottom()
+                  .scale(scales[0]);
+
+    var yAxis = d3.axisLeft()
+                  .scale(scales[1]);
+
+    svg.append("g")
+       .attr("class", "axis")
+       .attr("transform", "translate(0,"+(h-padding) + ")")
+       .call(xAxis);
+
+    svg.append("g")
+       .attr("class", "axis")
+       .attr("transform", "translate("+padding + ", 0)")
+       .call(yAxis);
+
 
   });
 
