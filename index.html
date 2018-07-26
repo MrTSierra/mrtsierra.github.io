@@ -81,8 +81,12 @@
     return tempArray;
   }
 
-  var lineDrawer = function(filteredData){
+  var lineDrawer = function(target, data, filterValue, lineClass){
     //lineDrawer an array of data as input and returns a line elment
+
+    var filteredData = filterFunction(data, filterValue);
+    console.table(filteredData);
+
     xScale = d3.scaleTime()
     .domain([
       filteredData[0][0],
@@ -95,22 +99,29 @@
     .range([h, 0]);
 
     //Define line generator
-    return d3.line()
+    var tempLine =  d3.line()
     .x(function(d) { return xScale(d[0]); })
     .y(function(d) { return yScale(d[3]); });
+
+    target.append("path")
+      .datum(filteredData)
+      .attr("class", lineClass)
+      .attr("d", tempLine);
+
+
   }
 
   d3.csv("/data/annual_aqi_by_county_merged.csv", rowConverter, function(data) {
     //console.table(data);
     dataset = data;
-    var dataGoodDays = filterFunction(data, "Good_Days");
-    console.table(dataGoodDays);
+    //var dataGoodDays = filterFunction(data, "Good_Days");
+    //console.table(dataGoodDays);
 
-    var dataModerateDays = filterFunction(data, "Moderate_Days");
-    console.table(dataModerateDays);
+    //var dataModerateDays = filterFunction(data, "Moderate_Days");
+    //console.table(dataModerateDays);
 
-    var lineGoodDays = lineDrawer(dataGoodDays);
-    var lineModerateDays = lineDrawer(dataModerateDays);
+    //var lineGoodDays = lineDrawer(dataGoodDays);
+    //var lineModerateDays = lineDrawer(dataModerateDays);
 
 
     var svg = d3.select("body")
@@ -118,17 +129,19 @@
           .attr("width", w)
           .attr("height", h);
 
+    lineDrawer(svg, dataset, "Good_Days", "goodDaysLine");
     //Create line
-    svg.append("path")
+    /*svg.append("path")
       .datum(dataGoodDays)
       .attr("class", "goodDaysLine")
       .attr("d", lineGoodDays);
+
 
     svg.append("path")
       .datum(dataModerateDays)
       .attr("class", "moderateDaysLine")
       .attr("d", lineModerateDays);
-
+*/
   });
 
 
