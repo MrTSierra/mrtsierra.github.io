@@ -8,14 +8,38 @@
 
     .goodDaysLine {
       fill: none;
-      stroke: teal;
-      stroke-width: 1.0;
+      stroke: green;
+      stroke-width: 2.0;
     }
 
     .moderateDaysLine {
       fill: none;
+      stroke: yellow;
+      stroke-width: 2.0;
+    }
+
+    .unhealthyForSensitiveGroupsDaysLine {
+      fill: none;
+      stroke: orange;
+      stroke-width: 2.0;
+    }
+
+    .unhealthyDaysLine {
+      fill: none;
       stroke: red;
-      stroke-width: 1.0;
+      stroke-width: 2.0;
+    }
+
+    .veryUnhealthyDaysLine {
+      fill: none;
+      stroke: purple;
+      stroke-width: 2.0;
+    }
+
+    .hazardousDaysLine {
+      fill: none;
+      stroke: brown;
+      stroke-width: 2.0;
     }
 
   </style>
@@ -82,7 +106,11 @@
   }
 
   var lineDrawer = function(target, data, filterValue, lineClass){
-    //lineDrawer an array of data as input and returns a line elment
+    //arguments:
+    //target the d3 selection to draw the lineClass
+    //data the data to display
+    //filterValue the string matching the CSV header to display
+    //lineClass the css class to draw the line
 
     var filteredData = filterFunction(data, filterValue);
     console.table(filteredData);
@@ -114,15 +142,6 @@
   d3.csv("/data/annual_aqi_by_county_merged.csv", rowConverter, function(data) {
     //console.table(data);
     dataset = data;
-    //var dataGoodDays = filterFunction(data, "Good_Days");
-    //console.table(dataGoodDays);
-
-    //var dataModerateDays = filterFunction(data, "Moderate_Days");
-    //console.table(dataModerateDays);
-
-    //var lineGoodDays = lineDrawer(dataGoodDays);
-    //var lineModerateDays = lineDrawer(dataModerateDays);
-
 
     var svg = d3.select("body")
           .append("svg")
@@ -130,18 +149,12 @@
           .attr("height", h);
 
     lineDrawer(svg, dataset, "Good_Days", "goodDaysLine");
-    //Create line
-    /*svg.append("path")
-      .datum(dataGoodDays)
-      .attr("class", "goodDaysLine")
-      .attr("d", lineGoodDays);
+    lineDrawer(svg, dataset, "Moderate_Days", "moderateDaysLine");
+    lineDrawer(svg, dataset, "Unhealthy_for_Sensitive_Groups_Days", "unhealthyForSensitiveGroupsDaysLine");
+    lineDrawer(svg, dataset, "Unhealthy_Days", "unhealthyDaysLine");
+    lineDrawer(svg, dataset, "Very_Unhealthy_Days", "veryUnhealthyDaysLine");
+    lineDrawer(svg, dataset, "Hazardous_Days", "hazardousDaysLine");
 
-
-    svg.append("path")
-      .datum(dataModerateDays)
-      .attr("class", "moderateDaysLine")
-      .attr("d", lineModerateDays);
-*/
   });
 
 
