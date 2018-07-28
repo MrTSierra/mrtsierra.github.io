@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>D3 Project</title>
+  <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+  <style type="text/css">
+
+    .goodDaysLine {
+      fill: none;
+      stroke: green;
+      stroke-width: 2.0;
+    }
+
+    .moderateDaysLine {
+      fill: none;
+      stroke: yellow;
+      stroke-width: 2.0;
+    }
+
+    .unhealthyForSensitiveGroupsDaysLine {
+      fill: none;
+      stroke: orange;
+      stroke-width: 2.0;
+    }
+
+    .unhealthyDaysLine {
+      fill: none;
+      stroke: red;
+      stroke-width: 2.0;
+    }
+
+    .veryUnhealthyDaysLine {
+      fill: none;
+      stroke: purple;
+      stroke-width: 2.0;
+    }
+
+    .hazardousDaysLine {
+      fill: none;
+      stroke: brown;
+      stroke-width: 2.0;
+    }
+
+  </style>
+</head>
+<body>
+  <script type="text/javascript">
+  // Global variables
+  var dataset;
+  var stateSelection = "California";
+  //var filteredData = [];
+
+  var w = 800;
+  var h = 500;
+  var padding = 30;
+
+  // Functions
+  var parseTime = d3.timeParse("%Y");
+  var rowConverter = function(d) {
+    return {
+      State: d.State,
+      County: d.County,
+      Year: new Date(+d.Year, 0, 1),
+      Days_with_AQI: +(d["Days with AQI"]),
+      Good_Days: +(d["Good Days"]),
+      Moderate_Days: +(d["Moderate Days"]),
+      Unhealthy_for_Sensitive_Groups_Days: +(d["Unhealthy for Sensitive Groups Days"]),
+      Unhealthy_Days: +(d["Unhealthy Days"]),
+      Very_Unhealthy_Days: +(d["Very Unhealthy Days"]),
+      Hazardous_Days: +(d["Hazardous Days"]),
+      Max_AQI: +(d["Max AQI"]),
+      Percentile_AQI_90th:+(d["90th Percentile AQI"]),
+      Median_AQI: +(d["Median AQI"]),
+      Days_CO: +(d["Days CO"]),
+      Days_NO2: +(d["Days NO2"]),
+      Days_Ozone: +(d["Days Ozone"]),
+      Days_SO2: +(d["Days_SO2"]),
+      Days_PM25: +(d["Days PM2.5"]),
+      Days_PM10: +(d["Days_PM10"])
+    };
+  }
+
+  var filterFunction = function(data, filterValue, stateSelection){
+    //Takes an array consisting of CSV data and parses it using filterValue a string for use in a d3 line function
+    var i;
+    var tempArray = []; //first element year, second element desired term , third term available data for that year, Fourth term the calculated data
+    var yearCount = 0;
+
+    tempArray[0] = [ data[0]["Year"], data[0][filterValue], data[0]["Days_with_AQI"], 0];
+
+    for( i = 1; i<data.length; i++) {
+      if(data[i]["State"] == stateSelection){
+        if(data[i]["Year"].getTime() == tempArray[yearCount][0].getTime()) {
+          tempArray[yearCount][1] += data[i][filterValue];
+          tempArray[yearCount][2] += data[i]["Days_with_AQI"];
+        } else {
+          yearCount++;
+          tempArray[yearCount] = [ data[i]["Year"], data[i][filterValue], data[i]["Days_with_AQI"], 0];
+        }
+      }
+    }
+
+    //convert to average values
+    for( i = 0; i < tempArray.length; i++) {
+      tempArray[i][3] = tempArray[i][1]/tempArray[i][2];
+    }
+
+    return tempArray;
+  }
+
+  var lineDrawer = function(target, data, filterValue, lineClass){
+    //arguments:
+    //target the d3 selection to draw the lineClass
+    //data the data to display
+    //filterValue the string matching the CSV header to display
+    //lineClass the css class to draw the line
+
+    var filteredData = filterFunction(data, filterValue);
+    console.table(filteredData);
+
+    xScale = d3.scaleTime()
+    .domain([
+      filteredData[0][0],
+      filteredData[filteredData.length-1][0]
+    ])
+    .range([padding, w-padding]);
+
+    yScale = d3.scaleLinear()
+    .domain([0, 1])
+    .range([h-padding, padding]);
+
+    //Define line generator
+    var tempLine =  d3.line()
+    .x(function(d) { return xScale(d[0]); })
+    .y(function(d) { return yScale(d[3]); });
+
+    target.append("path")
+      .datum(filteredData)
+      .attr("class", lineClass)
+      .attr("d", tempLine);
+
+      return [xScale, yScale];
+
+
+  }
+
+  d3.csv("/data/annual_aqi_by_county_merged.csv", rowConverter, function(data) {
+    //console.table(data);
+    dataset = data;
+
+    var body = d3.select("body");
+
+    var svg = d3.select("body")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", h);
+
+    lineDrawer(svg, dataset, "Good_Days", "goodDaysLine");
+    lineDrawer(svg, dataset, "Moderate_Days", "moderateDaysLine");
+    lineDrawer(svg, dataset, "Unhealthy_for_Sensitive_Groups_Days", "unhealthyForSensitiveGroupsDaysLine");
+    lineDrawer(svg, dataset, "Unhealthy_Days", "unhealthyDaysLine");
+    lineDrawer(svg, dataset, "Very_Unhealthy_Days", "veryUnhealthyDaysLine");
+    var scales = lineDrawer(svg, dataset, "Hazardous_Days", "hazardousDaysLine");
+
+    var xAxis = d3.axisBottom()
+                  .scale(scales[0]);
+
+    var yAxis = d3.axisLeft()
+                  .scale(scales[1]);
+
+    svg.append("g")
+       .attr("class", "axis")
+       .attr("transform", "translate(0,"+(h-padding) + ")")
+       .call(xAxis);
+
+    svg.append("g")
+       .attr("class", "axis")
+       .attr("transform", "translate("+padding + ", 0)")
+       .call(yAxis);
+
+    d3.select("#test1")
+      .on("click", function () {
+
+        body.append("p")
+            .attr("class", "button")
+            .attr("id", "test")
+            .html("This a d3 test paragraph");
+
+
+      });
+
+
+
+
+
+
+/*
+    body.append("p")
+        .attr("class", "button")
+        .attr("id", "test")
+        .html("This a d3 test paragraph");
+*/
+  });
+
+
+
+
+  d3.select("body").append("p").text("New paragraph!");
+  </script>
+  <p class="button" id="test1">This is a test text</p>
+</body>
+</html>

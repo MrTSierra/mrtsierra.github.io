@@ -5,182 +5,449 @@
   <title>D3 Project</title>
   <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
   <style type="text/css">
+/* Layout */
+  .content {
+    max-width: 1500px;
+    margin:auto;
+  }
 
-    .goodDaysLine {
-      fill: none;
-      stroke: green;
-      stroke-width: 2.0;
-    }
+  .annotations{
+    padding: 10px;
+  }
 
-    .moderateDaysLine {
-      fill: none;
-      stroke: yellow;
-      stroke-width: 2.0;
-    }
+  .annotations h2{
+    font-size: 40px;
+  }
 
-    .unhealthyForSensitiveGroupsDaysLine {
-      fill: none;
-      stroke: orange;
-      stroke-width: 2.0;
-    }
+  .qualityDaysHolder {
+    float:left;
+    width: 50%;
+  }
 
-    .unhealthyDaysLine {
-      fill: none;
-      stroke: red;
-      stroke-width: 2.0;
-    }
+  .polutionDaysHolder {
+    float:left;
+    width: 50%;
+    padding-left: 20px;
+  }
 
-    .veryUnhealthyDaysLine {
-      fill: none;
-      stroke: purple;
-      stroke-width: 2.0;
-    }
 
-    .hazardousDaysLine {
-      fill: none;
-      stroke: brown;
-      stroke-width: 2.0;
-    }
+  /* Lines details */
+
+  .goodDaysLine {
+    fill: none;
+    stroke: green;
+    stroke-width: 2.0;
+  }
+
+  .moderateDaysLine {
+    fill: none;
+    stroke: gold;
+    stroke-width: 2.0;
+  }
+
+  .unhealthyForSensitiveGroupsDaysLine {
+    fill: none;
+    stroke: orange;
+    stroke-width: 2.0;
+  }
+
+  .unhealthyDaysLine {
+    fill: none;
+    stroke: red;
+    stroke-width: 2.0;
+  }
+
+  .veryUnhealthyDaysLine {
+    fill: none;
+    stroke: purple;
+    stroke-width: 2.0;
+  }
+
+  .hazardousDaysLine {
+    fill: none;
+    stroke: brown;
+    stroke-width: 2.0;
+  }
+
+  /* Navigation Bar Container*/
+  .navigationBar {
+    overflow:hidden;
+    background-color: #333;
+    font-family: Arial;
+  }
+
+  /* Links inside the navbar */
+  .navigationBar a {
+    float: left;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+
+  /* dropDown container */
+  .dropDown{
+    float:left;
+    overflow: hidden;
+  }
+
+  /* drop down button */
+  .dropDown .dropDownButton {
+    font-size: 16px;
+    border: none;
+    outline: none;
+    color:white;
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: inherit;
+    margin:0;
+  }
+
+  /* add navigation bar hover characteristics */
+  .navigationBar a:hover, .dropDown:hover .dropDownButton {
+    background-color: red;
+  }
+
+  /* hide dropdown-content content by default */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    overflow: scroll;
+
+  }
+
+  /* Links insdie the dropdown */
+  .dropdown-content a {
+    float:left;
+    color: black;
+    padding: 12 px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+  }
+
+  /* add dropdown hover behavior */
+  .dropdown-content a:hover {
+    background-color: #ddd;
+  }
+
+  /*show dropdown menu on hover */
+  .dropDown:hover .dropdown-content {
+    display:block;
+  }
 
   </style>
 </head>
 <body>
-  <script type="text/javascript">
-  // Global variables
-  var dataset;
-  //var filteredData = [];
+  <div class="content" id="content_container">
+    <div class="navigationBar">
+      <a href="#back" id="backButton">Back</a>
+      <a href="#next" id="nextButton">Next</a>
+      <div class="dropDown">
+        <button class="dropDownButton">Choose State
+        </button>
+        <div class="dropdown-content" id="stateDrop"></div>
+      </div>
+    </div>
 
-  var w = 800;
-  var h = 500;
-  var padding = 30;
+    <div class="annotations" id="annotations_id">
+      <h2 id="annontationTitle">Title</h2>
+    </div>
 
-  // Functions
-  var parseTime = d3.timeParse("%Y");
-  var rowConverter = function(d) {
-    return {
-      State: d.State,
-      County: d.County,
-      Year: new Date(+d.Year, 0, 1),
-      Days_with_AQI: +(d["Days with AQI"]),
-      Good_Days: +(d["Good Days"]),
-      Moderate_Days: +(d["Moderate Days"]),
-      Unhealthy_for_Sensitive_Groups_Days: +(d["Unhealthy for Sensitive Groups Days"]),
-      Unhealthy_Days: +(d["Unhealthy Days"]),
-      Very_Unhealthy_Days: +(d["Very Unhealthy Days"]),
-      Hazardous_Days: +(d["Hazardous Days"]),
-      Max_AQI: +(d["Max AQI"]),
-      Percentile_AQI_90th:+(d["90th Percentile AQI"]),
-      Median_AQI: +(d["Median AQI"]),
-      Days_CO: +(d["Days CO"]),
-      Days_NO2: +(d["Days NO2"]),
-      Days_Ozone: +(d["Days Ozone"]),
-      Days_SO2: +(d["Days_SO2"]),
-      Days_PM25: +(d["Days PM2.5"]),
-      Days_PM10: +(d["Days_PM10"])
-    };
-  }
+    <div class="qualityDaysHolder">
+      <div class="qualityDaysGraphDIV" id="qualityDaysGraphDIV_id">
+      </div>
 
-  var filterFunction = function(data, filterValue){
-    //Takes an array consisting of CSV data and parses it using filterValue a string for use in a d3 line function
-    var i;
-    var tempArray = []; //first element year, second element desired term , third term available data for that year, Fourth term the calculated data
-    var yearCount = 0;
+      <div class="qualityDaysLegend" id="qualityDaysLegend_id">
+      </div>
+    </div>
 
-    tempArray[0] = [ data[0]["Year"], data[0][filterValue], data[0]["Days_with_AQI"], 0];
+    <div class="polutionDaysHolder">
+    <div class="polutionDaysGraphDIV" id="polutionDaysGraphDIV_id">
+    </div>
 
-    for( i = 1; i<data.length; i++) {
-      if(data[i]["Year"].getTime() == tempArray[yearCount][0].getTime()) {
-        tempArray[yearCount][1] += data[i][filterValue];
-        tempArray[yearCount][2] += data[i]["Days_with_AQI"];
-      } else {
-        yearCount++;
-        tempArray[yearCount] = [ data[i]["Year"], data[i][filterValue], data[i]["Days_with_AQI"], 0];
+    <div class="polutionDaysLegend" id="polutionDaysLegend_id">
+    </div>
+  </div>
+
+
+
+    <script type="text/javascript">
+    // Global variables
+    var dataset;
+    var currentStateSelection = "All States";
+    var statesArray;
+    //var filteredData = [];
+
+    var w = 800;
+    var h = 500;
+    var padding = 30;
+
+    // Functions
+    var parseTime = d3.timeParse("%Y");
+    var rowConverter = function(d) {
+      return {
+        State: d.State,
+        County: d.County,
+        Year: new Date(+d.Year, 0, 1),
+        Days_with_AQI: +(d["Days with AQI"]),
+        Good_Days: +(d["Good Days"]),
+        Moderate_Days: +(d["Moderate Days"]),
+        Unhealthy_for_Sensitive_Groups_Days: +(d["Unhealthy for Sensitive Groups Days"]),
+        Unhealthy_Days: +(d["Unhealthy Days"]),
+        Very_Unhealthy_Days: +(d["Very Unhealthy Days"]),
+        Hazardous_Days: +(d["Hazardous Days"]),
+        Max_AQI: +(d["Max AQI"]),
+        Percentile_AQI_90th:+(d["90th Percentile AQI"]),
+        Median_AQI: +(d["Median AQI"]),
+        Days_CO: +(d["Days CO"]),
+        Days_NO2: +(d["Days NO2"]),
+        Days_Ozone: +(d["Days Ozone"]),
+        Days_SO2: +(d["Days_SO2"]),
+        Days_PM25: +(d["Days PM2.5"]),
+        Days_PM10: +(d["Days_PM10"])
+      };
+    }
+
+    var statesGenerator = function ( data ) {
+      //generates and returns and array of the names of all states used in the data
+      var tempArray;
+      var stateCount = 0;
+
+      tempArray = ["All States"];
+
+      for( i = 1; i<data.length && stateCount<51; i++) {
+        if(data[i]["State"] == tempArray[stateCount]) {
+
+        } else {
+          stateCount++;
+          tempArray[stateCount] = data[i]["State"];
+        }
+      }
+
+      return tempArray;
+    }
+
+    var addStatesToList = function(states, dataset){
+      //appends state names to dropdown list
+      var i;
+      for(i=0;i<states.length;i++){
+        d3.select("#stateDrop")
+        .append("a")
+        .attr("href", "#")
+        .html(states[i])
+        .datum(states[i])
+        .on("click", function (d) {
+          currentStateSelection = d;
+          d3.select("#annontationTitle")
+            .html(currentStateSelection);
+            
+          lineRedrawer(0, dataset, currentStateSelection, "Good_Days", "goodDaysLine");
+          lineRedrawer(0, dataset, currentStateSelection, "Moderate_Days", "moderateDaysLine");
+          lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_for_Sensitive_Groups_Days", "unhealthyForSensitiveGroupsDaysLine");
+          lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_Days", "unhealthyDaysLine");
+          lineRedrawer(0, dataset, currentStateSelection, "Very_Unhealthy_Days", "veryUnhealthyDaysLine");
+          lineRedrawer(0, dataset, currentStateSelection, "Hazardous_Days", "hazardousDaysLine");
+        });
       }
     }
 
-    //convert to average values
-    for( i = 0; i < tempArray.length; i++) {
-      tempArray[i][3] = tempArray[i][1]/tempArray[i][2];
+    var filterFunction = function(data, stateSelection, filterValue){
+      //Takes an array consisting of CSV data and parses it using filterValue a string for use in a d3 line function
+      var i;
+      var tempArray = []; //first element year, second element desired term , third term available data for that year, Fourth term the calculated data
+      var yearCount = 0;
+
+      tempArray[0] = [ data[0]["Year"], 0, 0, 0];
+
+      //Decides whether to choose all state data or just one state.
+      if(stateSelection == "All States") {
+        for( i = 0; i<data.length; i++) {
+          if(data[i]["Year"].getTime() == tempArray[yearCount][0].getTime()) {
+            tempArray[yearCount][1] += data[i][filterValue];
+            tempArray[yearCount][2] += data[i]["Days_with_AQI"];
+          } else {
+            yearCount++;
+            tempArray[yearCount] = [ data[i]["Year"], data[i][filterValue], data[i]["Days_with_AQI"], 0];
+          }
+        }
+      } else {
+        for( i = 0; i<data.length; i++) {
+          if(data[i]["State"] == stateSelection){
+
+            if(data[i]["Year"].getTime() == tempArray[yearCount][0].getTime()) {
+              tempArray[yearCount][1] += data[i][filterValue];
+              tempArray[yearCount][2] += data[i]["Days_with_AQI"];
+            } else {
+              yearCount++;
+              tempArray[yearCount] = [ data[i]["Year"], data[i][filterValue], data[i]["Days_with_AQI"], 0];
+            }
+
+          }
+        }
+      }
+
+
+      //convert to average values
+      for( i = 0; i < tempArray.length; i++) {
+        tempArray[i][3] = tempArray[i][1]/tempArray[i][2];
+      }
+
+      return tempArray;
     }
 
-    return tempArray;
-  }
+    var lineDrawer = function(target, data, stateSelection, filterValue, lineClass){
+      //arguments:
+      //target the d3 selection to draw the lineClass
+      //data the data to display
+      //filterValue the string matching the CSV header to display
+      //lineClass the css class to draw the line
 
-  var lineDrawer = function(target, data, filterValue, lineClass){
-    //arguments:
-    //target the d3 selection to draw the lineClass
-    //data the data to display
-    //filterValue the string matching the CSV header to display
-    //lineClass the css class to draw the line
+      var filteredData = filterFunction(data, stateSelection, filterValue);
+      //console.log(filterValue);
+      //console.table(filteredData);
 
-    var filteredData = filterFunction(data, filterValue);
-    console.table(filteredData);
+      xScale = d3.scaleTime()
+      .domain([
+        filteredData[0][0],
+        filteredData[filteredData.length-1][0]
+      ])
+      .range([padding, w-padding]);
 
-    xScale = d3.scaleTime()
-    .domain([
-      filteredData[0][0],
-      filteredData[filteredData.length-1][0]
-    ])
-    .range([padding, w-padding]);
+      yScale = d3.scaleLinear()
+      .domain([0, 1])
+      .range([h-padding, padding]);
 
-    yScale = d3.scaleLinear()
-    .domain([0, 1])
-    .range([h-padding, padding]);
+      //Define line generator
+      var tempLine =  d3.line()
+      .x(function(d) { return xScale(d[0]); })
+      .y(function(d) { return yScale(d[3]); });
 
-    //Define line generator
-    var tempLine =  d3.line()
-    .x(function(d) { return xScale(d[0]); })
-    .y(function(d) { return yScale(d[3]); });
-
-    target.append("path")
+      target.append("path")
       .datum(filteredData)
       .attr("class", lineClass)
+      .attr("id", lineClass + "_id")
       .attr("d", tempLine);
 
       return [xScale, yScale];
 
 
-  }
+    }
 
-  d3.csv("/data/annual_aqi_by_county_merged.csv", rowConverter, function(data) {
-    //console.table(data);
-    dataset = data;
+    var lineRedrawer = function(target, data, stateSelection, filterValue, lineClass){
+      //arguments:
+      //target the d3 selection to draw the lineClass
+      //data the data to display
+      //filterValue the string matching the CSV header to display
+      //lineClass the css class to draw the line
 
-    var svg = d3.select("body")
-          .append("svg")
-          .attr("width", w)
-          .attr("height", h);
+      var filteredData = filterFunction(data, stateSelection, filterValue);
+      //console.log(filterValue);
+      //console.table(filteredData);
 
-    lineDrawer(svg, dataset, "Good_Days", "goodDaysLine");
-    lineDrawer(svg, dataset, "Moderate_Days", "moderateDaysLine");
-    lineDrawer(svg, dataset, "Unhealthy_for_Sensitive_Groups_Days", "unhealthyForSensitiveGroupsDaysLine");
-    lineDrawer(svg, dataset, "Unhealthy_Days", "unhealthyDaysLine");
-    lineDrawer(svg, dataset, "Very_Unhealthy_Days", "veryUnhealthyDaysLine");
-    var scales = lineDrawer(svg, dataset, "Hazardous_Days", "hazardousDaysLine");
+      xScale = d3.scaleTime()
+      .domain([
+        filteredData[0][0],
+        filteredData[filteredData.length-1][0]
+      ])
+      .range([padding, w-padding]);
 
-    var xAxis = d3.axisBottom()
-                  .scale(scales[0]);
+      yScale = d3.scaleLinear()
+      .domain([0, 1])
+      .range([h-padding, padding]);
 
-    var yAxis = d3.axisLeft()
-                  .scale(scales[1]);
+      //Define line generator
+      var tempLine =  d3.line()
+      .x(function(d) { return xScale(d[0]); })
+      .y(function(d) { return yScale(d[3]); });
 
-    svg.append("g")
-       .attr("class", "axis")
-       .attr("transform", "translate(0,"+(h-padding) + ")")
-       .call(xAxis);
+      d3.select("#" + lineClass + "_id")
+      .datum(filteredData)
+      .transition()
+      .duration(1000)
+      .attr("d", tempLine);
 
-    svg.append("g")
-       .attr("class", "axis")
-       .attr("transform", "translate("+padding + ", 0)")
-       .call(yAxis);
-
-
-  });
-
-
+      return [xScale, yScale];
 
 
-  d3.select("body").append("p").text("New paragraph!");
-  </script>
+    }
+
+    d3.csv("/data/annual_aqi_by_county_merged.csv", rowConverter, function(data) {
+      //console.table(data);
+      dataset = data;
+
+
+      statesArray = statesGenerator(dataset);
+      console.log(statesArray);
+      addStatesToList(statesArray, dataset);
+
+
+
+      var svg = d3.selectAll("#qualityDaysGraphDIV_id")
+      .append("svg")
+      .attr("width", w)
+      .attr("height", h);
+
+      lineDrawer(svg, dataset, currentStateSelection, "Good_Days", "goodDaysLine");
+      lineDrawer(svg, dataset, currentStateSelection, "Moderate_Days", "moderateDaysLine");
+      lineDrawer(svg, dataset, currentStateSelection, "Unhealthy_for_Sensitive_Groups_Days", "unhealthyForSensitiveGroupsDaysLine");
+      lineDrawer(svg, dataset, currentStateSelection, "Unhealthy_Days", "unhealthyDaysLine");
+      lineDrawer(svg, dataset, currentStateSelection, "Very_Unhealthy_Days", "veryUnhealthyDaysLine");
+      var scales = lineDrawer(svg, dataset, currentStateSelection, "Hazardous_Days", "hazardousDaysLine");
+
+      var xAxis = d3.axisBottom()
+      .scale(scales[0]);
+
+      var yAxis = d3.axisLeft()
+      .scale(scales[1]);
+
+      svg.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(0,"+(h-padding) + ")")
+      .call(xAxis);
+
+      svg.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate("+padding + ", 0)")
+      .call(yAxis);
+
+      d3.select("#test1")
+      .on("click", function () {
+
+        if(currentStateSelection == "New York") {
+          currentStateSelection = "All";
+        } else {
+          currentStateSelection = "New York";
+        }
+
+        lineRedrawer(svg, dataset, currentStateSelection, "Good_Days", "goodDaysLine");
+        lineRedrawer(svg, dataset, currentStateSelection, "Moderate_Days", "moderateDaysLine");
+        lineRedrawer(svg, dataset, currentStateSelection, "Unhealthy_for_Sensitive_Groups_Days", "unhealthyForSensitiveGroupsDaysLine");
+        lineRedrawer(svg, dataset, currentStateSelection, "Unhealthy_Days", "unhealthyDaysLine");
+        lineRedrawer(svg, dataset, currentStateSelection, "Very_Unhealthy_Days", "veryUnhealthyDaysLine");
+        lineRedrawer(svg, dataset, currentStateSelection, "Hazardous_Days", "hazardousDaysLine");
+
+
+      });
+
+
+
+
+
+
+      /*
+      body.append("p")
+      .attr("class", "button")
+      .attr("id", "test")
+      .html("This a d3 test paragraph");
+      */
+    });
+    </script>
+  </div>
 </body>
 </html>
