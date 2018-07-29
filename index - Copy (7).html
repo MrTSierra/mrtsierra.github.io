@@ -8,27 +8,24 @@
 /* Layout */
   * {
   box-sizing: border-box;
-  font-size: 12pt;
   }
 
   .content {
-    max-width: 1220px;
+    max-width: 1620px;
     margin:auto;
   }
 
   .annotations{
-    padding: 0px;
-    margin: 0px;
+    padding: 10px;
   }
 
   .annotations h2{
-    font-size: 24pt;
+    font-size: 40px;
   }
 
   .qualityDaysHolder {
     float:left;
     width: 50%;
-    margin: 0;
   }
 
   .polutionDaysHolder {
@@ -66,20 +63,10 @@
     stroke-width: 2.0;
   }
 
-  .Good_Days_Legend {
-    background-color: green;
-    margin: 0px;
-  }
-
   .Moderate_Days_Line {
     fill: none;
     stroke: gold;
     stroke-width: 2.0;
-  }
-
-  .Moderate_Days_Legend {
-    background-color: gold;
-    margin: 0px;
   }
 
   .Unhealthy_for_Sensitive_Groups_Days_Line {
@@ -88,24 +75,10 @@
     stroke-width: 2.0;
   }
 
-  .Unhealthy_for_Sensitive_Groups_Days_Legend {
-    background-color: orange;
-    margin: 0px;
-    color: white;
-  }
-
   .Unhealthy_Days_Line {
     fill: none;
     stroke: red;
     stroke-width: 2.0;
-  }
-
-  .Unhealthy_Days_Legend {
-    background-color: red;
-    color: white;
-    margin: 0px;
-    padding-top: 15px;
-    padding-bottom: 15px;
   }
 
   .Very_Unhealthy_Days_Line {
@@ -114,26 +87,10 @@
     stroke-width: 2.0;
   }
 
-  .Very_Unhealthy_Days_Legend {
-    background-color: purple;
-    color: white;
-    margin: 0px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-  }
-
   .Hazardous_Days_Line {
     fill: none;
     stroke: brown;
     stroke-width: 2.0;
-  }
-
-  .Hazardous_Days_Legend {
-    background-color: brown;
-    color: white;
-    margin: 0px;
-    padding-top: 15px;
-    padding-bottom: 15px;
   }
 
   /*polutant Lines details */
@@ -144,26 +101,10 @@
     stroke-width: 2.0;
   }
 
-  .Days_SO2_Legend {
-    background-color: yellow;
-    color: black;
-    margin: 0px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-  }
-
   .Days_CO_Line {
     fill: none;
     stroke: purple;
     stroke-width: 2.0;
-  }
-
-  .Days_CO_Legend {
-    background-color: purple;
-    color: white;
-    margin: 0px;
-    padding-top: 15px;
-    padding-bottom: 15px;
   }
 
   .Days_NO2_Line {
@@ -172,26 +113,10 @@
     stroke-width: 2.0;
   }
 
-  .Days_NO2_Legend {
-    background-color: olive;
-    color: white;
-    margin: 0px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-  }
-
   .Days_PM10_Line {
     fill: none;
     stroke: SlateBlue;
     stroke-width: 2.0;
-  }
-
-  .Days_PM10_Legend {
-    background-color: SlateBlue;
-    color: white;
-    margin: 0px;
-    padding-top: 0px;
-    padding-bottom: 5px;
   }
 
   .Days_PM25_Line {
@@ -200,26 +125,10 @@
     stroke-width: 2.0;
   }
 
-  .Days_PM25_Legend {
-    background-color: Tomato;
-    color: white;
-    margin: 0px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-  }
-
   .Days_Ozone_Line {
     fill: none;
     stroke: SaddleBrown;
     stroke-width: 2.0;
-  }
-
-  .Days_Ozone_Legend {
-    background-color: SaddleBrown;
-    color: white;
-    margin: 0px;
-    padding-top: 15px;
-    padding-bottom: 15px;
   }
 
   /* Navigation Bar Container*/
@@ -270,14 +179,13 @@
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
-    overflow: auto;
-    max-height: 250px;
+    overflow: scroll;
 
   }
 
   /* Links insdie the dropdown */
   .dropdown-content a {
-    float:none;
+    float:left;
     color: black;
     padding: 12 px 16px;
     text-decoration: none;
@@ -333,20 +241,12 @@
     cursor: pointer;
   }
 
-  .svg {
-    margin: 0;
-  }
-
-  .annontationText_id {
-    margin: 0;
-  }
   </style>
 </head>
 <body>
   <div class="content" id="content_container">
     <div class="navigationBar">
       <a href="#modal" id="VisualizationButton">About the Visualization</a>
-      <a href="#back" id="backButton">Back</a>
       <a href="#next" id="nextButton">Next</a>
       <div class="dropDown">
         <button class="dropDownButton">Choose State
@@ -387,7 +287,6 @@
       <p>Some text in the Modal..</p>
     </div>
   </div>
-  <div id="tooltip"></div>
 
 
 
@@ -410,9 +309,6 @@
 
 
 
-      var tooltip = d3.select("#tooltip");
-
-
 
     // Global variables
     var dataset;
@@ -422,42 +318,42 @@
     var currentSlideMax;
     //var filteredData = [];
 
-    var w = 600;
-    var h = 400;
-    var padding = 40;
+    var w = 800;
+    var h = 500;
+    var padding = 30;
 
     //qualityDays legend text Array
     var legendText = [
       ["Value 0", ""],
-      ["Proportion of '\"Good\" Days. AQI is 0 to 50. Air quality is considered satisfactory, and air pollution poses little or no risk.' ", "Good_Days"],
-      ["Proportion of '\"Moderate\" Days. AQI is 51 to 100. Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people. For example, people who are unusually sensitive to ozone may experience respiratory symptoms.'", "Moderate_Days"],
-      ["Proportion of '\"Unhealthy for Sensitive Groups\" Days. AQI is 101 to 150. Although general public is not likely to be affected at this AQI range, people with lung disease, older adults and children are at a greater risk from exposure to ozone, whereas persons with heart and lung disease, older adults and children are at greater risk from the presence of particles in the air.'", "Unhealthy_for_Sensitive_Groups_Days"],
-      ["Proportion of '\"Unhealthy\" Days. AQI is 151 to 200. Everyone may begin to experience some adverse health effects, and members of the sensitive groups may experience more serious effects.'", "Unhealthy_Days"],
-      ["Proportion of '\"Very Unhealthy\" Days. AQI is 201 to 300. This would trigger a health alert signifying that everyone may experience more serious health effects.'", "Very_Unhealthy_Days"],
-      ["Proportion of '\"Hazardous\" Days. AQI greater than 300. This would trigger a health warnings of emergency conditions. The entire population is more likely to be affected.' (https://airnow.gov/index.cfm?action=aqibasics.aqi)", "Hazardous_Days"],
-      ["Proportion of Days where carbon monoxide (CO) was the most prevalent polutant and thereby determined the AQI score", "Days_CO"],
-      ["Proportion of Days where nitrogen dioxide (NO2)  was the most prevalent polutant and thereby determined the AQI score", "Days_NO2"],
-      ["Proportion of Days where ozone (O2) was the most prevalent polutant and thereby determined the AQI score", "Days_Ozone"],
-      ["Proportion of Days where sulfur dioxide (SO2) was the most prevalent polutant and thereby determined the AQI score", "Days_SO2"],
-      ["Proportion of Days where PM 10 (particulate mater < 10 micrometers) was the most prevalent polutant and thereby determined the AQI score", "Days_PM25"],
-      ["Proportion of Days where PM 2.5 (particulate mater < 2.5 micrometers) was the most prevalent polutant and thereby determined the AQI score", "Days_PM10"]
+      ["Value 1", "Good_Days"],
+      ["Value 2", "Moderate_Days"],
+      ["Value 3", "Unhealthy_for_Sensitive_Groups_Days"],
+      ["Value 4", "Unhealthy_Days"],
+      ["Value 5", "Very_Unhealthy_Days"],
+      ["Value 6", "Hazardous_Days"],
+      ["Value 1", "Days_CO"],
+      ["Value 2", "Days_NO2"],
+      ["Value 3", "Days_Ozone"],
+      ["Value 4", "Days_SO2"],
+      ["Value 5", "Days_PM25"],
+      ["Value 6", "Days_PM10"]
     ];
 
     // Annotation text
     var annotationText = [ //annotation title, annotation value
-      ["Changes in U.S. Polution and Predominate Polutants 1980-2017", "This data comes from the AirData section of the EPA’s web site (https://aqs.epa.gov/aqsweb/airdata/download_files.html), specifically, the Annual Summary Data: AQI by county for the years 1980 through 2017. The data is a summary of the yearly Air Quality Index data for U.S. as calculated by the EPA. In general, AQI (Air Quality Index) is a measure of a pollutant’s presence compared to its defined acceptable level. Where multiple pollutants are measured, the total AQI is the value of the pollutant with the highest individual AQI. Total AQI is then used to qualify measured days as Good Days (AQI: 0-50), Moderate Days (AQI: 50-100), Unhealthy for Sensitive Groups Days (AQI: 100-150), Unhealthy Days (AQI: 150-200), Very Unhealthy Days (AQI: 200-250) and Hazardous Days (AQI: 250-300). Additionally, the determining pollutant, the one with the highest individual AQI, is also recorded. More information about AQI can be found here https://www.airnow.gov/index.cfm?action=aqibasics.aqi and here https://en.wikipedia.org/wiki/Air_quality_index#United_States I filtered the data by dividing all measures, e.g. good days, moderate days, pollutants, etc. by the number of recorded days for that monitoring site in order to have comparable data. The average was then taken over all monitoring sites per year under consideration (and current filters) to produce the values used in the chart. <p>This Visualization is best viewed at 1920x1080 with a full sized browser window.</p> <p>Please press 'next' to begin.</p>"],
+      ["Changes in U.S. Polution and Predominate Polutants 1980-2017", "This Visualization is best viewed at 1920x1080 with a full sized browser window."],
       ["Proportion of Days Meeting the AQI 'Good Days' Threashold", "Good_Days"],
       ["Proportion of Days Meeting the AQI 'Moderate Days' Threashold", "Moderate_Days"],
       ["Proportion of Days Meeting the AQI 'Unhealthy for Sensitive Groups Days' Threashold", "Unhealthy_for_Sensitive_Groups_Days"],
       ["Proportion of Days Meeting the AQI 'Unhealthy Days' Threashold", "Unhealthy_Days"],
       ["Proportion of Days Meeting the AQI 'Very Unhealthy Days' Threashold", "Very_Unhealthy_Days"],
       ["Proportion of Days Meeting the AQI 'Hazardous Days' Threashold", "Hazardous_Days"],
-      ["Proportion of Days Where CO Determined AQI Value", "Days_CO"],
-      ["Proportion of Days Where NO2 Determined AQI Value", "Days_NO2"],
-      ["Proportion of Days Where Ozone Determined AQI Value", "Days_Ozone"],
-      ["Proportion of Days Where SO2 Determined AQI Value", "Days_SO2"],
-      ["Proportion of Days Where PM 2.5 Determined AQI Value", "Days_PM25"],
-      ["Proportion of Days Where PM 10 Determined AQI Value", "Days_PM10"],
+      ["Value 1", "Days_CO"],
+      ["Value 2", "Days_NO2"],
+      ["Value 3", "Days_Ozone"],
+      ["Value 4", "Days_SO2"],
+      ["Value 5", "Days_PM25"],
+      ["Value 6", "Days_PM10"],
       ["U.S Polution for All States", "Placeholder"],
       ["Most Urban State: New Jersy", "Placeholder"],
       ["Second Most Urban State: Rhode Island", "Placeholder"],
@@ -468,62 +364,6 @@
       ["U.S Polution for All States", "Please explore the data for your home state, your home state's rival, or any other state you are interested in by choosing a state from 'Choose State' above."]
     ];
 
-    //Annotation data for states
-    var stateAnnotations = [
-      ["All U.S. States", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Alabama", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Alaska", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Arizona", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Arkansas", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["California", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Colorado", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Connecticut", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Delaware", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Delaware", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Florida", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Georgia", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Hawaii", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Idaho", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Illinois", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Indiana", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Iowa", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Kansas", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Kentucky", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Louisiana", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Maine", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Maryland", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Massachusetts", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Michigan", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Minnesota", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Mississippi", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Missouri", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Montana", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Nebraska", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Nevada", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["New Hampshire", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["New Jersey", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["New Mexico", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["New York", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["North Carolina", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["North Dakota", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Ohio", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Oklahoma", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Oregon", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Pennsylvania", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Rhode Island", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["South Carolina", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["South Dakota", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Tennessee", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Texas", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Utah", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Vermont", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Virginia", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Washington", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["West Virginia", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Wisconsin", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["Wyoming", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."],
-      ["District of Columbia", "Here is where you would place the relevant environmental legistlation and impact events that you want to call out for this state. This would require domain knowledge beyond the scope of this course. For now."]
-    ];
 
     // Functions
     var parseTime = d3.timeParse("%Y");
@@ -567,7 +407,6 @@
         if(currentSlide > 0 && currentSlide < 4){
           d3.select("#qualityDaysLegendLeft_id")
           .append("p")
-          .attr("class",legendText[currentSlide][1]+"_Legend")
           .html(legendText[currentSlide][0]);
 
           lineDrawer(targetQuality, dataset, currentStateSelection,
@@ -575,7 +414,6 @@
           } else if(currentSlide > 3 && currentSlide < 7){
             d3.select("#qualityDaysLegendRight_id")
             .append("p")
-            .attr("class",legendText[currentSlide][1]+"_Legend")
             .html(legendText[currentSlide][0]);
 
             lineDrawer(targetQuality, dataset, currentStateSelection,
@@ -584,7 +422,6 @@
 
             d3.select("#polutionDaysLegendLeft_id")
             .append("p")
-            .attr("class",legendText[currentSlide][1]+"_Legend")
             .html(legendText[currentSlide][0]);
 
             lineDrawer(targetPolutant, dataset, currentStateSelection,
@@ -593,13 +430,11 @@
 
             d3.select("#polutionDaysLegendRight_id")
             .append("p")
-            .attr("class",legendText[currentSlide][1]+"_Legend")
             .html(legendText[currentSlide][0]);
             lineDrawer(targetPolutant, dataset, currentStateSelection,
               legendText[currentSlide][1], legendText[currentSlide][1]+"_Line");
           } else if(currentSlide == 13){
-            currentStateSelection = "All U.S. States";
-
+            currentStateSelection = "All U.S. States";;
 
               lineRedrawer(0, dataset, currentStateSelection, "Good_Days", "Good_Days_Line");
               lineRedrawer(0, dataset, currentStateSelection, "Moderate_Days", "Moderate_Days_Line");
@@ -617,8 +452,7 @@
 
           } else if(currentSlide == 14){
             currentStateSelection = "New Jersey";;
-            d3.select("#backButton")
-              .attr("display","none");
+
               lineRedrawer(0, dataset, currentStateSelection, "Good_Days", "Good_Days_Line");
               lineRedrawer(0, dataset, currentStateSelection, "Moderate_Days", "Moderate_Days_Line");
               lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_for_Sensitive_Groups_Days", "Unhealthy_for_Sensitive_Groups_Days_Line");
@@ -732,185 +566,6 @@
         })
       }
 
-      var backButtonFunctionInitialize = function(targetQuality, targetPolutant, dataset){
-        d3.select("#backButton")
-          .attr("display","none")
-          .on("click", function (d) {
-          if (currentSlide > 13) {
-            currentSlide--;
-          }
-
-          d3.select("#annontationTitle_id")
-          .html(annotationText[currentSlide][0]);
-
-          d3.select("#annontationText_id")
-          .html(annotationText[currentSlide][1]);
-/*
-          if(currentSlide > 0 && currentSlide < 4){
-            d3.select("#qualityDaysLegendLeft_id")
-            .append("p")
-            .html(legendText[currentSlide][0]);
-
-            lineDrawer(targetQuality, dataset, currentStateSelection,
-              legendText[currentSlide][1], legendText[currentSlide][1]+"_Line");
-            } else if(currentSlide > 3 && currentSlide < 7){
-              d3.select("#qualityDaysLegendRight_id")
-              .append("p")
-              .html(legendText[currentSlide][0]);
-
-              lineDrawer(targetQuality, dataset, currentStateSelection,
-                legendText[currentSlide][1], legendText[currentSlide][1]+"_Line");
-            } else if(currentSlide > 6 && currentSlide < 10){
-
-              d3.select("#polutionDaysLegendLeft_id")
-              .append("p")
-              .html(legendText[currentSlide][0]);
-
-              lineDrawer(targetPolutant, dataset, currentStateSelection,
-                legendText[currentSlide][1], legendText[currentSlide][1]+"_Line");
-            } else if(currentSlide > 9 && currentSlide < 13){
-
-              d3.select("#polutionDaysLegendRight_id")
-              .append("p")
-              .html(legendText[currentSlide][0]);
-              lineDrawer(targetPolutant, dataset, currentStateSelection,
-                legendText[currentSlide][1], legendText[currentSlide][1]+"_Line");
-            } else */
-             if(currentSlide == 13){
-              currentStateSelection = "All U.S. States";
-              d3.select("#backButton")
-                .attr("display","none");
-
-                lineRedrawer(0, dataset, currentStateSelection, "Good_Days", "Good_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Moderate_Days", "Moderate_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_for_Sensitive_Groups_Days", "Unhealthy_for_Sensitive_Groups_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_Days", "Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Very_Unhealthy_Days", "Very_Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Hazardous_Days", "Hazardous_Days_Line");
-
-                lineRedrawer(0, dataset, currentStateSelection, "Days_SO2", "Days_SO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_CO", "Days_CO_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_NO2", "Days_NO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM10", "Days_PM10_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM25", "Days_PM25_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_Ozone", "Days_Ozone_Line");
-
-            } else if(currentSlide == 14){
-              currentStateSelection = "New Jersey";;
-
-                lineRedrawer(0, dataset, currentStateSelection, "Good_Days", "Good_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Moderate_Days", "Moderate_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_for_Sensitive_Groups_Days", "Unhealthy_for_Sensitive_Groups_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_Days", "Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Very_Unhealthy_Days", "Very_Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Hazardous_Days", "Hazardous_Days_Line");
-
-                lineRedrawer(0, dataset, currentStateSelection, "Days_SO2", "Days_SO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_CO", "Days_CO_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_NO2", "Days_NO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM10", "Days_PM10_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM25", "Days_PM25_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_Ozone", "Days_Ozone_Line");
-            } else if(currentSlide == 15){
-              currentStateSelection = "Rhode Island";;
-
-                lineRedrawer(0, dataset, currentStateSelection, "Good_Days", "Good_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Moderate_Days", "Moderate_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_for_Sensitive_Groups_Days", "Unhealthy_for_Sensitive_Groups_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_Days", "Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Very_Unhealthy_Days", "Very_Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Hazardous_Days", "Hazardous_Days_Line");
-
-                lineRedrawer(0, dataset, currentStateSelection, "Days_SO2", "Days_SO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_CO", "Days_CO_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_NO2", "Days_NO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM10", "Days_PM10_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM25", "Days_PM25_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_Ozone", "Days_Ozone_Line");
-            } else if(currentSlide == 16){
-              currentStateSelection = "Massachusetts";;
-
-                lineRedrawer(0, dataset, currentStateSelection, "Good_Days", "Good_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Moderate_Days", "Moderate_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_for_Sensitive_Groups_Days", "Unhealthy_for_Sensitive_Groups_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_Days", "Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Very_Unhealthy_Days", "Very_Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Hazardous_Days", "Hazardous_Days_Line");
-
-                lineRedrawer(0, dataset, currentStateSelection, "Days_SO2", "Days_SO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_CO", "Days_CO_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_NO2", "Days_NO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM10", "Days_PM10_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM25", "Days_PM25_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_Ozone", "Days_Ozone_Line");
-            } else if(currentSlide == 17){
-              currentStateSelection = "Alaska";;
-
-                lineRedrawer(0, dataset, currentStateSelection, "Good_Days", "Good_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Moderate_Days", "Moderate_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_for_Sensitive_Groups_Days", "Unhealthy_for_Sensitive_Groups_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_Days", "Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Very_Unhealthy_Days", "Very_Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Hazardous_Days", "Hazardous_Days_Line");
-
-                lineRedrawer(0, dataset, currentStateSelection, "Days_SO2", "Days_SO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_CO", "Days_CO_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_NO2", "Days_NO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM10", "Days_PM10_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM25", "Days_PM25_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_Ozone", "Days_Ozone_Line");
-            } else if(currentSlide == 18){
-              currentStateSelection = "Wyoming";;
-
-                lineRedrawer(0, dataset, currentStateSelection, "Good_Days", "Good_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Moderate_Days", "Moderate_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_for_Sensitive_Groups_Days", "Unhealthy_for_Sensitive_Groups_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_Days", "Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Very_Unhealthy_Days", "Very_Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Hazardous_Days", "Hazardous_Days_Line");
-
-                lineRedrawer(0, dataset, currentStateSelection, "Days_SO2", "Days_SO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_CO", "Days_CO_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_NO2", "Days_NO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM10", "Days_PM10_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM25", "Days_PM25_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_Ozone", "Days_Ozone_Line");
-            } else if(currentSlide == 19){
-              currentStateSelection = "Montana";;
-
-                lineRedrawer(0, dataset, currentStateSelection, "Good_Days", "Good_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Moderate_Days", "Moderate_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_for_Sensitive_Groups_Days", "Unhealthy_for_Sensitive_Groups_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_Days", "Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Very_Unhealthy_Days", "Very_Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Hazardous_Days", "Hazardous_Days_Line");
-
-                lineRedrawer(0, dataset, currentStateSelection, "Days_SO2", "Days_SO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_CO", "Days_CO_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_NO2", "Days_NO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM10", "Days_PM10_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM25", "Days_PM25_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_Ozone", "Days_Ozone_Line");
-            } else if(currentSlide == 20){
-              currentStateSelection = "All U.S. States";;
-
-                lineRedrawer(0, dataset, currentStateSelection, "Good_Days", "Good_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Moderate_Days", "Moderate_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_for_Sensitive_Groups_Days", "Unhealthy_for_Sensitive_Groups_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Unhealthy_Days", "Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Very_Unhealthy_Days", "Very_Unhealthy_Days_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Hazardous_Days", "Hazardous_Days_Line");
-
-                lineRedrawer(0, dataset, currentStateSelection, "Days_SO2", "Days_SO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_CO", "Days_CO_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_NO2", "Days_NO2_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM10", "Days_PM10_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_PM25", "Days_PM25_Line");
-                lineRedrawer(0, dataset, currentStateSelection, "Days_Ozone", "Days_Ozone_Line");
-            }
-          })
-        }
-
     var statesGenerator = function ( data ) {
       //generates and returns and array of the names of all states used in the data
       var tempArray;
@@ -963,14 +618,6 @@
           d3.select("#annontationTitle_id")
           .html(currentStateSelection);
 
-          for(i=0; i<states.length;i++){
-            if(currentStateSelection==stateAnnotations[i][0]){
-              d3.select("#annontationText_id")
-              .html(stateAnnotations[i][1]);
-              break;
-            }
-          }
-
           if(currentSlide<13) {
             currentSlide = currentSlideMax;
             targetQuality.selectAll("path")
@@ -990,22 +637,18 @@
               if(i<4){
                 d3.select("#qualityDaysLegendLeft_id")
                 .append("p")
-                .attr("class",legendText[i][1]+"_Legend")
                 .html(legendText[i][0]);
               } else if (i<7) {
                 d3.select("#qualityDaysLegendRight_id")
                 .append("p")
-                .attr("class",legendText[i][1]+"_Legend")
                 .html(legendText[i][0]);
               } else if (i<10) {
                 d3.select("#polutionDaysLegendLeft_id")
                 .append("p")
-                .attr("class",legendText[i][1]+"_Legend")
                 .html(legendText[i][0]);
               } else {
                 d3.select("#polutionDaysLegendRight_id")
                 .append("p")
-                .attr("class",legendText[i][1]+"_Legend")
                 .html(legendText[i][0]);
               }
             }
@@ -1190,7 +833,6 @@
       .duration(1000)
       .attr("d", tempLine);
 
-
       return [xScale, yScale];
 
 
@@ -1246,14 +888,7 @@
       drawAxes(polutionDaysGraph, scalesPolutionDays[0], scalesPolutionDays[1]);
 
       nextButtonFunctionInitialize(qualityDaysGraph, polutionDaysGraph, dataset);
-      backButtonFunctionInitialize(qualityDaysGraph, polutionDaysGraph, dataset);
       addStatesToList(statesArray, dataset, qualityDaysGraph, polutionDaysGraph);
-
-      d3.select("#annontationTitle_id")
-      .html(annotationText[currentSlide][0]);
-
-      d3.select("#annontationText_id")
-      .html(annotationText[currentSlide][1]);
 /*
       lineDrawer(qualityDaysGraph, dataset, currentStateSelection, "Good_Days", "Good_Days_Line");
       lineDrawer(qualityDaysGraph, dataset, currentStateSelection, "Moderate_Days", "Moderate_Days_Line");

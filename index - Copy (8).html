@@ -8,27 +8,25 @@
 /* Layout */
   * {
   box-sizing: border-box;
-  font-size: 12pt;
+  font-size: 16pt;
   }
 
   .content {
-    max-width: 1220px;
+    max-width: 1620px;
     margin:auto;
   }
 
   .annotations{
-    padding: 0px;
-    margin: 0px;
+    padding: 10px;
   }
 
   .annotations h2{
-    font-size: 24pt;
+    font-size: 40px;
   }
 
   .qualityDaysHolder {
     float:left;
     width: 50%;
-    margin: 0;
   }
 
   .polutionDaysHolder {
@@ -270,14 +268,13 @@
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
-    overflow: auto;
-    max-height: 250px;
+    overflow: scroll;
 
   }
 
   /* Links insdie the dropdown */
   .dropdown-content a {
-    float:none;
+    float:left;
     color: black;
     padding: 12 px 16px;
     text-decoration: none;
@@ -333,13 +330,6 @@
     cursor: pointer;
   }
 
-  .svg {
-    margin: 0;
-  }
-
-  .annontationText_id {
-    margin: 0;
-  }
   </style>
 </head>
 <body>
@@ -387,7 +377,6 @@
       <p>Some text in the Modal..</p>
     </div>
   </div>
-  <div id="tooltip"></div>
 
 
 
@@ -410,9 +399,6 @@
 
 
 
-      var tooltip = d3.select("#tooltip");
-
-
 
     // Global variables
     var dataset;
@@ -422,8 +408,8 @@
     var currentSlideMax;
     //var filteredData = [];
 
-    var w = 600;
-    var h = 400;
+    var w = 800;
+    var h = 500;
     var padding = 40;
 
     //qualityDays legend text Array
@@ -445,7 +431,7 @@
 
     // Annotation text
     var annotationText = [ //annotation title, annotation value
-      ["Changes in U.S. Polution and Predominate Polutants 1980-2017", "This data comes from the AirData section of the EPA’s web site (https://aqs.epa.gov/aqsweb/airdata/download_files.html), specifically, the Annual Summary Data: AQI by county for the years 1980 through 2017. The data is a summary of the yearly Air Quality Index data for U.S. as calculated by the EPA. In general, AQI (Air Quality Index) is a measure of a pollutant’s presence compared to its defined acceptable level. Where multiple pollutants are measured, the total AQI is the value of the pollutant with the highest individual AQI. Total AQI is then used to qualify measured days as Good Days (AQI: 0-50), Moderate Days (AQI: 50-100), Unhealthy for Sensitive Groups Days (AQI: 100-150), Unhealthy Days (AQI: 150-200), Very Unhealthy Days (AQI: 200-250) and Hazardous Days (AQI: 250-300). Additionally, the determining pollutant, the one with the highest individual AQI, is also recorded. More information about AQI can be found here https://www.airnow.gov/index.cfm?action=aqibasics.aqi and here https://en.wikipedia.org/wiki/Air_quality_index#United_States I filtered the data by dividing all measures, e.g. good days, moderate days, pollutants, etc. by the number of recorded days for that monitoring site in order to have comparable data. The average was then taken over all monitoring sites per year under consideration (and current filters) to produce the values used in the chart. <p>This Visualization is best viewed at 1920x1080 with a full sized browser window.</p> <p>Please press 'next' to begin.</p>"],
+      ["Changes in U.S. Polution and Predominate Polutants 1980-2017", "This Visualization is best viewed at 1920x1080 with a full sized browser window. <p>Please press 'next' to begin.</p>"],
       ["Proportion of Days Meeting the AQI 'Good Days' Threashold", "Good_Days"],
       ["Proportion of Days Meeting the AQI 'Moderate Days' Threashold", "Moderate_Days"],
       ["Proportion of Days Meeting the AQI 'Unhealthy for Sensitive Groups Days' Threashold", "Unhealthy_for_Sensitive_Groups_Days"],
@@ -1189,7 +1175,6 @@
       .transition()
       .duration(1000)
       .attr("d", tempLine);
-
 
       return [xScale, yScale];
 
