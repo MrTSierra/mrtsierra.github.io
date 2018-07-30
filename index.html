@@ -562,6 +562,12 @@
                        .remove();
           targetPolutant.selectAll("path")
                        .remove();
+          d3.select("#qualityDaysLegendHolder_id")
+            .selectAll("p")
+            .remove();
+          d3.select("#PolutionDaysLegend_id")
+            .selectAll("p")
+            .remove();
         }
         if (currentSlide < currentSlideMax-1) {
           currentSlide++;
