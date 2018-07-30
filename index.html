@@ -424,7 +424,7 @@
     var h = 400;
     var padding = 40;
       
-    var slideStateArray = [true,true,true,true,true,true,true,true,true,true,true,true];  //denotes whether a slide less than 31 has not been visited
+    var slideStateArray = [true,true,true,true,true,true,true,true,true,true,true,true,true];  //denotes whether a slide less than 31 has not been visited
 
     //qualityDays legend text Array
     var legendText = [
@@ -563,9 +563,6 @@
         if (currentSlide < currentSlideMax-1) {
           currentSlide++;
         }
-        console.log("Main next button");
-        console.log(currentSlide);
-        console.log(slideStateArray[currentSlide]);
 
         d3.select("#annontationTitle_id")
         .html(annotationText[currentSlide][0]);
@@ -597,8 +594,6 @@
               legendText[currentSlide][1], legendText[currentSlide][1]+"_Line");
             }
           } else if(currentSlide > 6 && currentSlide < 10){
-            console.log(currentSlide);
-            console.log(slideStateArray[currentSlide]);
             if (slideStateArray[currentSlide]){
               slideStateArray[currentSlide] = false;
             d3.select("#polutionDaysLegendLeft_id")
@@ -611,8 +606,6 @@
             }
           
           } else if(currentSlide > 9 && currentSlide < 13){
-            console.log(currentSlide);
-            console.log(slideStateArray[currentSlide]);
             if (slideStateArray[currentSlide]){
               slideStateArray[currentSlide] = false;
             d3.select("#polutionDaysLegendRight_id")
