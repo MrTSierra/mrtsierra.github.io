@@ -69,6 +69,19 @@
     stroke: green;
     stroke-width: 2.0;
   }
+      
+      #Good_Days_Line_Max_Id {
+    fill: none;
+    stroke: green;
+    stroke-width: 2.0;
+  }
+      
+       #Good_Days_Line_Min_Id {
+    fill: none;
+    stroke: green;
+    stroke-width: 2.0;
+  }
+      
 
   .Good_Days_Legend {
     background-color: green;
@@ -397,8 +410,8 @@
 
 
 <p>Does the narrative visualization effectively utilize annotations?</p>
-<p>I don’t know in the context of this assignment. This confusion has been brought about by a comment on piazza and review of the limited explanation in the video. I thought I had included annotations, but it depends if annotations are solely defined as being marks on the graph itself or if they have their more broad common definition of &quot; a note added by way of comment or explanation e.g. The bibliography was provided with helpful annotations.&quot;  (https://www.merriam-webster.com/dictionary/annotation). I have included what I thought to be annotations in the form of accompanying text describing general trends in the data that I wish to call attention to and which would meet the common definition of annotation. For example for the explanation of the three most urban and rural states, I included text describing the trends found in each set and I left them up for all three members of the set before removing them. This was done to allow comparisons among the three members of the set collectively. <p>
-<p>However in the more limited sense of notes on the graph than I have not, apparently, included annotations, but largely because I am discussing general increases, decreases, and trends in my data and not specific points. If I have time I will try to find some places to put marks on the graph to avoid this ambiguity and meet both definitions.</p>
+<p>I hope so. I am little confused by a comment on piazza and review of the limited explanation in the video. I thought I had included annotations, but it depends if annotations are solely defined as being marks on the graph itself or if they have their more broad common definition of &quot; a note added by way of comment or explanation e.g. The bibliography was provided with helpful annotations.&quot;  (https://www.merriam-webster.com/dictionary/annotation). I have included what I thought to be annotations in the form of accompanying text describing general trends in the data that I wish to call attention to and which would meet the common definition of annotation. For example for the explanation of the three most urban and rural states, I included text describing the trends found in each set and I left them up for all three members of the set before removing them. This was done to allow comparisons among the three members of the set collectively. <p>
+<p>However in case annotations are only marks on a graph then I have included for the purpose of this rubric, min and max lines for the good days line as well as text indicating their values. I chose the good days line as it represents the ultimate goal of air improvement. The annotaions are created for each state and set of data called. They are subsequently removed in order to avoid confusion with the slides that come next or new state data. I feel they add some value in comparison between graphs as well as idicating the range of improvement that states have made during this period.</p>
  
 <p>Does the narrative visualization effectively utilize parameters? </p>
 <p>I primarily utilize parameters in the form of the current slide number, and the current state or territory selected. The slide number determines the current scene that is displayed, at least until the user takes over at the last scene. During the explanation of the rural and urban states the slide parameter determines the current state parameter, After the user is invited to explore the data, the dominant parameter is the current state or territory being displayed. This is chosen by the user and determines the how the data is filtered (choosing only data for that state) and how the state’s scene is generated and what accompanying text is displayed. There are some other hidden parameters that determine whether certain parts of the legend are displayed or not. The main parameters are the current slide value and the current state<p>
@@ -441,6 +454,10 @@
     var statesArray;
     var currentSlide = 0;
     var currentSlideMax;
+        
+        //Bad bad bad
+        var qualityDaysGraph;
+        
     //var filteredData = [];
 
     var w = 600;
@@ -1225,7 +1242,7 @@
       //data the data to display
       //filterValue the string matching the CSV header to display
       //lineClass the css class to draw the line
-
+        
       var filteredData = filterFunction(data, stateSelection, filterValue);
       //console.log(filterValue);
       //console.table(filteredData);
@@ -1240,6 +1257,8 @@
       yScale = d3.scaleLinear()
       .domain([0, 1])
       .range([h-padding, padding]);
+        
+       
 
       //Define line generator
       var tempLine =  d3.line()
@@ -1256,6 +1275,57 @@
       .transition()
       .duration(1000)
       .attr("opacity", 1);
+        
+    if(lineClass=="Good_Days_Line"){
+        d3.select("#Good_Days_Line_Text_Max_Id")
+            .remove();
+        
+        d3.select("#Good_Days_Line_Text_Min_Id")
+            .remove(); 
+        
+         var max = [0,-1];
+        var min = [0,2];
+        for (i=0; i<filteredData.length;i++){
+            if(filteredData[i][3]>max[1]){ 
+                max[1] = filteredData[i][3];
+                max[0] = filteredData[i][0];
+            }
+            if(filteredData[i][3]<min[1] && filteredData[i][3]>=0){
+                min[1] = filteredData[i][3];
+                min[0] = filteredData[i][0];
+            }
+        }
+        
+        target.append("path")
+              .attr("d", "M "+ padding+" "+ yScale(max[1]) + " L "+(w-padding)+" " + yScale(max[1]))
+             .attr("stroke-dasharray", "10,10")
+              .attr("id", "Good_Days_Line_Max_Id")
+              .attr("opacity", 0)
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1);
+        
+        target.append("text")
+            .text("Max: "+parseFloat(max[1]).toFixed(2))
+            .attr("x", w/2)
+            .attr("y", yScale(max[1])-5)
+            .attr("id", "Good_Days_Line_Text_Max_Id");
+
+        target.append("path")
+              .attr("d", "M "+ padding+" "+ yScale(min[1]) + " L "+(w-padding)+" " + yScale(min[1]))
+             .attr("stroke-dasharray", "10,10")
+              .attr("id", "Good_Days_Line_Min_Id")
+              .attr("opacity", 0)
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1);
+        
+        target.append("text")
+            .text("Min: "+parseFloat(min[1]).toFixed(2))
+            .attr("x", w/2)
+            .attr("y", yScale(min[1])+15)
+            .attr("id", "Good_Days_Line_Text_Min_Id");
+    }
 
 
 
@@ -1294,8 +1364,64 @@
       .transition()
       .duration(1000)
       .attr("d", tempLine);
+        
+         if(lineClass=="Good_Days_Line"){
+        d3.select("#Good_Days_Line_Text_Max_Id")
+            .remove();
+        
+        d3.select("#Good_Days_Line_Text_Min_Id")
+            .remove(); 
+             
+        d3.select("#Good_Days_Line_Min_Id")
+            .remove();
+        
+        d3.select("#Good_Days_Line_Max_Id")
+            .remove(); 
+        
+         var max = [0,-1];
+        var min = [0,2];
+        for (i=0; i<filteredData.length;i++){
+            if(filteredData[i][3]>max[1]){ 
+                max[1] = filteredData[i][3];
+                max[0] = filteredData[i][0];
+            }
+            if(filteredData[i][3]<min[1] && filteredData[i][3]>=0){
+                min[1] = filteredData[i][3];
+                min[0] = filteredData[i][0];
+            }
+        }
+        
+        qualityDaysGraph.append("path")
+              .attr("d", "M "+ padding+" "+ yScale(max[1]) + " L "+(w-padding)+" " + yScale(max[1]))
+             .attr("stroke-dasharray", "10,10")
+              .attr("id", "Good_Days_Line_Max_Id")
+              .attr("opacity", 0)
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1);
+        
+        qualityDaysGraph.append("text")
+            .text("Max: "+parseFloat(max[1]).toFixed(2))
+            .attr("x", w/2)
+            .attr("y", yScale(max[1])-5)
+            .attr("id", "Good_Days_Line_Text_Max_Id");
 
-
+        qualityDaysGraph.append("path")
+              .attr("d", "M "+ padding+" "+ yScale(min[1]) + " L "+(w-padding)+" " + yScale(min[1]))
+             .attr("stroke-dasharray", "10,10")
+              .attr("id", "Good_Days_Line_Min_Id")
+              .attr("opacity", 0)
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1);
+        
+        
+        qualityDaysGraph.append("text")
+            .text("Min: "+parseFloat(min[1]).toFixed(2))
+            .attr("x", w/2)
+            .attr("y", yScale(min[1])+15)
+            .attr("id", "Good_Days_Line_Text_Min_Id");
+    }
       return [xScale, yScale];
 
 
@@ -1332,7 +1458,7 @@
 
 
 
-      var qualityDaysGraph = d3.selectAll("#qualityDaysGraphDIV_id")
+      qualityDaysGraph = d3.selectAll("#qualityDaysGraphDIV_id")
       .append("svg")
       .attr("width", w)
       .attr("height", h);
