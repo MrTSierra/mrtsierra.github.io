@@ -766,6 +766,60 @@
           if (currentSlide > 0) {
             currentSlide--;
           }
+          
+          if (currentSlide==0) {
+          
+          targetQuality.selectAll("path")
+                       .remove();
+          targetPolutant.selectAll("path")
+                       .remove();
+          d3.select("#qualityDaysLegendHolder_id")
+            .selectAll("p")
+            .remove();
+          d3.select("#PolutionDaysLegend_id")
+            .selectAll("p")
+            .remove();
+            
+            for(i=1;i<13;i++){
+              if(i<4){
+                d3.select("#qualityDaysLegendLeft_id")
+                .append("p")
+                .attr("class",legendText[i][1]+"_Legend")
+                .html(legendText[i][0]);
+              } else if (i<7) {
+                d3.select("#qualityDaysLegendRight_id")
+                .append("p")
+                .attr("class",legendText[i][1]+"_Legend")
+                .html(legendText[i][0]);
+              } else if (i<10) {
+                d3.select("#polutionDaysLegendLeft_id")
+                .append("p")
+                .attr("class",legendText[i][1]+"_Legend")
+                .html(legendText[i][0]);
+              } else {
+                d3.select("#polutionDaysLegendRight_id")
+                .append("p")
+                .attr("class",legendText[i][1]+"_Legend")
+                .html(legendText[i][0]);
+              }
+            }
+            
+            lineDrawer(targetQuality, dataset, currentStateSelection, "Good_Days", "Good_Days_Line");
+            lineDrawer(targetQuality, dataset, currentStateSelection, "Moderate_Days", "Moderate_Days_Line");
+            lineDrawer(targetQuality, dataset, currentStateSelection, "Unhealthy_for_Sensitive_Groups_Days", "Unhealthy_for_Sensitive_Groups_Days_Line");
+            lineDrawer(targetQuality, dataset, currentStateSelection, "Unhealthy_Days", "Unhealthy_Days_Line");
+            lineDrawer(targetQuality, dataset, currentStateSelection, "Very_Unhealthy_Days", "Very_Unhealthy_Days_Line");
+            lineDrawer(targetQuality, dataset, currentStateSelection, "Hazardous_Days", "Hazardous_Days_Line");
+
+            lineDrawer(targetPolutant, dataset, currentStateSelection, "Days_SO2", "Days_SO2_Line");
+            lineDrawer(targetPolutant, dataset, currentStateSelection, "Days_CO", "Days_CO_Line");
+            lineDrawer(targetPolutant, dataset, currentStateSelection, "Days_NO2", "Days_NO2_Line");
+            lineDrawer(targetPolutant, dataset, currentStateSelection, "Days_PM10", "Days_PM10_Line");
+            lineDrawer(targetPolutant, dataset, currentStateSelection, "Days_PM25", "Days_PM25_Line");
+            lineDrawer(targetPolutant, dataset, currentStateSelection, "Days_Ozone", "Days_Ozone_Line");
+            
+            
+        }
 
           d3.select("#annontationTitle_id")
           .html(annotationText[currentSlide][0]);
@@ -1296,6 +1350,30 @@
       lineDrawer(polutionDaysGraph, dataset, currentStateSelection, "Days_PM10", "Days_PM10_Line");
       lineDrawer(polutionDaysGraph, dataset, currentStateSelection, "Days_PM25", "Days_PM25_Line");
       lineDrawer(polutionDaysGraph, dataset, currentStateSelection, "Days_Ozone", "Days_Ozone_Line");
+      
+      for(i=1;i<13;i++){
+              if(i<4){
+                d3.select("#qualityDaysLegendLeft_id")
+                .append("p")
+                .attr("class",legendText[i][1]+"_Legend")
+                .html(legendText[i][0]);
+              } else if (i<7) {
+                d3.select("#qualityDaysLegendRight_id")
+                .append("p")
+                .attr("class",legendText[i][1]+"_Legend")
+                .html(legendText[i][0]);
+              } else if (i<10) {
+                d3.select("#polutionDaysLegendLeft_id")
+                .append("p")
+                .attr("class",legendText[i][1]+"_Legend")
+                .html(legendText[i][0]);
+              } else {
+                d3.select("#polutionDaysLegendRight_id")
+                .append("p")
+                .attr("class",legendText[i][1]+"_Legend")
+                .html(legendText[i][0]);
+              }
+            }
 
 
 
