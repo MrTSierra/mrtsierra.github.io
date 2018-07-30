@@ -382,8 +382,30 @@
   <div id="VisualizationModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <p>Some text in the Modal..</p>
-    </div>
+      <h2>Essay:</h2>
+<p>This Visualization is best viewed at 1920x1080 in a full sized browser window.</p>
+<p>Press <b>next</b> to advance</p> 
+<p>In creating this narrative, I choose the martini glass hybrid structure. The narrative begins with an overview of the graph for the national level. The next 12 slides chosen as slide show layouts then inform the viewer what each metric measures. The 7 slides after that show some of the conclusions and comparisons that can be made from the graphs by comparing urban and rural states. And finally the viewer is invited to explore and compare the states, districts, and territories as they see fit. I had originally intended to allow drilling down to the county level but time constraints (I also spent the last two weeks at work working on a big project that wrapped up Friday)  have delayed this features implementation. The other feature that has been delayed is implementing tool tips for multiple line graphs on a chart. This proved harder than I anticipated and took more time than I allotted for it. It is not currently, implemented. Though I will do it shortly as not having it bothers me.</p>
+<p>The rest of the essay I will endeavor to elaborate on the rubric points for ease in grading and peer reviews.</p>
+
+<p>Does the narrative visualization correctly follow the hybrid structure? </p>
+<p>I believe that the narrative visualization I have created follows the martini glass hybrid structure fairly well. It begins with an author led path in which I explain the metrics and demonstrate their use and some ‘interesting’ features of the data before allowing the viewer to explore the data on their own by choosing and comparing different states and territories.</p> 
+
+<p>Does the narrative visualization effectively utilize scenes?</p>
+<p>I hope it does. I used a slide show layout for my scenes with a linear author led path in the beginning to first introduce the different metrics being displayed and discussed and then moved on to some examples, still using the same slide show layout, that show some of the conclusions and comparisons that can be made from the graphs. Finally, I move on to a scene inviting the user to explore further. If I were to break it down explicitly, I have six scenes devoted to explaining how the AQI rating system works and what it means. Then I have six scenes devoted to explaining what the pollutant metrics are and the pollutants impact on health and environment (or well it would be). Then three scenes that show what conclusions that can be drawn from the three most urban states, and three scenes that show what conclusions that can be drawn from the three most rural states. Finally, I have a scene that invites further exploration from the viewer. The rest is up to the user.
+
+
+
+<p>Does the narrative visualization effectively utilize annotations?</p>
+<p>I don’t know in the context of this assignment. This confusion has been brought about by a comment on piazza and review of the limited explanation in the video. I thought I had included annotations, but it depends if annotations are solely defined as being marks on the graph itself or if they have their more broad common definition of &quot; a note added by way of comment or explanation e.g. The bibliography was provided with helpful annotations.&quot;  (https://www.merriam-webster.com/dictionary/annotation). I have included what I thought to be annotations in the form of accompanying text describing general trends in the data that I wish to call attention to and which would meet the common definition of annotation. For example for the explanation of the three most urban and rural states, I included text describing the trends found in each set and I left them up for all three members of the set before removing them. This was done to allow comparisons among the three members of the set collectively. <p>
+<p>However in the more limited sense of notes on the graph than I have not, apparently, included annotations, but largely because I am discussing general increases, decreases, and trends in my data and not specific points. If I have time I will try to find some places to put marks on the graph to avoid this ambiguity and meet both definitions.</p>>
+ 
+<p>Does the narrative visualization effectively utilize parameters? </p>
+<p>I primarily utilize parameters in the form of the current slide number, and the current state or territory selected. The slide number determines the current scene that is displayed, at least until the user takes over at the last scene. During the explanation of the rural and urban states the slide parameter determines the current state parameter, After the user is invited to explore the data, the dominant parameter is the current state or territory being displayed. This is chosen by the user and determines the how the data is filtered (choosing only data for that state) and how the state’s scene is generated and what accompanying text is displayed. There are some other hidden parameters that determine whether certain parts of the legend are displayed or not. The main parameters are the current slide value and the current state<p>
+
+<p>Does the narrative visualization effectively utilize triggers? </p>
+<p>This visualization uses many different triggers. I will leave it to the viewer to determine if they are effective. The main trigger is probably clicking the next button. This trigger changes the value of the current slide which cascades a series of changes resulting in the creation of a different scene. Depending on the slide these can include what data is displayed (changing the current state parameter) and how it’s animated to how the data itself is filtered. A change in the slide value changes all kinds of parameters, e.g. the current state, what’s displayed etc. The other main trigger is the viewer’s choice of a new state to view. This changes the parameter of the current state which leads to a change in the parameters that determines which parts of the data are filtered and included and what current state text is being displayed (though all state text is currently the same it does pull in different data for each state it just happens to be the same data. I didn’t have time to customize 50 states worth of data.)
+     </div>
   </div>
   <div id="tooltip"></div>
 
