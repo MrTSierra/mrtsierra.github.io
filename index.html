@@ -555,6 +555,9 @@
       d3.select("#nextButton")
       .on("click", function (d) {
         if (currentSlide==0) {
+          for(i=0;i<slideStateArray.length;i++){
+            slideStateArray[i]=true;
+          }
           targetQuality.selectAll("path")
                        .remove();
           targetPolutant.selectAll("path")
