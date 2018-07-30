@@ -563,6 +563,9 @@
         if (currentSlide < currentSlideMax-1) {
           currentSlide++;
         }
+        console.log("Main next button");
+        console.log(currentSlide);
+        console.log(slideStateArray[currentSlide]);
 
         d3.select("#annontationTitle_id")
         .html(annotationText[currentSlide][0]);
