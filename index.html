@@ -423,6 +423,8 @@
     var w = 600;
     var h = 400;
     var padding = 40;
+      
+    var slideStateArray = [true,true,true,true,true,true,true,true,true,true,true,true];  //denotes whether a slide less than 31 has not been visited
 
     //qualityDays legend text Array
     var legendText = [
@@ -569,14 +571,20 @@
         .html(annotationText[currentSlide][1]);
 
         if(currentSlide > 0 && currentSlide < 4){
+          if (slideStateArray[currentSlide]){
+            slideStateArray[currentSlide] = false;
           d3.select("#qualityDaysLegendLeft_id")
           .append("p")
           .attr("class",legendText[currentSlide][1]+"_Legend")
           .html(legendText[currentSlide][0]);
+          
 
           lineDrawer(targetQuality, dataset, currentStateSelection,
             legendText[currentSlide][1], legendText[currentSlide][1]+"_Line");
+          }
           } else if(currentSlide > 3 && currentSlide < 7){
+            if (slideStateArray[currentSlide]){
+              slideStateArray[currentSlide] = false;
             d3.select("#qualityDaysLegendRight_id")
             .append("p")
             .attr("class",legendText[currentSlide][1]+"_Legend")
@@ -585,7 +593,8 @@
             lineDrawer(targetQuality, dataset, currentStateSelection,
               legendText[currentSlide][1], legendText[currentSlide][1]+"_Line");
           } else if(currentSlide > 6 && currentSlide < 10){
-
+            if (slideStateArray[currentSlide]){
+              slideStateArray[currentSlide] = false;
             d3.select("#polutionDaysLegendLeft_id")
             .append("p")
             .attr("class",legendText[currentSlide][1]+"_Legend")
@@ -593,14 +602,18 @@
 
             lineDrawer(targetPolutant, dataset, currentStateSelection,
               legendText[currentSlide][1], legendText[currentSlide][1]+"_Line");
+            }
+          }
           } else if(currentSlide > 9 && currentSlide < 13){
-
+            if (slideStateArray[currentSlide]){
+              slideStateArray[currentSlide] = false;
             d3.select("#polutionDaysLegendRight_id")
             .append("p")
             .attr("class",legendText[currentSlide][1]+"_Legend")
             .html(legendText[currentSlide][0]);
             lineDrawer(targetPolutant, dataset, currentStateSelection,
               legendText[currentSlide][1], legendText[currentSlide][1]+"_Line");
+            }
           } else if(currentSlide == 13){
             currentStateSelection = "All U.S. States";
 
@@ -740,7 +753,7 @@
         d3.select("#backButton")
           .attr("display","none")
           .on("click", function (d) {
-          if (currentSlide > 13) {
+          if (currentSlide > 0) {
             currentSlide--;
           }
 
