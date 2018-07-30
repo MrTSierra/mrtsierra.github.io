@@ -592,7 +592,10 @@
 
             lineDrawer(targetQuality, dataset, currentStateSelection,
               legendText[currentSlide][1], legendText[currentSlide][1]+"_Line");
+            }
           } else if(currentSlide > 6 && currentSlide < 10){
+            console.log(currentSlide);
+            console.log(slideStateArray[currentSlide]);
             if (slideStateArray[currentSlide]){
               slideStateArray[currentSlide] = false;
             d3.select("#polutionDaysLegendLeft_id")
@@ -605,6 +608,8 @@
             }
           }
           } else if(currentSlide > 9 && currentSlide < 13){
+            console.log(currentSlide);
+            console.log(slideStateArray[currentSlide]);
             if (slideStateArray[currentSlide]){
               slideStateArray[currentSlide] = false;
             d3.select("#polutionDaysLegendRight_id")
